@@ -1,0 +1,140 @@
+set number
+syntax on
+set nocompatible " be iMproved, required
+filetype off " required
+ 
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'mattn/vim-lsp-settings'
+Plugin 'prabirshrestha/asyncomplete.vim'
+Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'puremourning/vimspector'
+Plugin 'dense-analysis/ale'
+Plugin 'preservim/nerdtree'
+Plugin 'yegappan/taglist'
+Plugin 'honza/vim-snippets'
+Plugin 'SirVer/ultisnips'
+Plugin 'plasticboy/vim-markdown'
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+ 
+" All of your Plugins must be added before the following line
+call vundle#end() " required
+filetype plugin indent on " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList - lists configured plugins
+" :PluginInstall - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+
+
+"------------------------------------------------------------------------------
+"YouCompleteMe 配置
+" 自动补全配置
+set backspace=indent,eol,start
+set completeopt=longest,menu "让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>" "回车即选中当前项
+"上下左右键的行为 会显示其他信息
+inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp> pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+"-----括号缩进自动补全
+inoremap ' ''<ESC>i
+inoremap " ""<ESC>i
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap { {<CR>}<ESC>O
+
+set smartindent 
+set tabstop=4 
+set shiftwidth=4 
+
+"----键盘修改，在编辑模式下移动光标
+inoremap <C-w> <Up>
+inoremap <C-a> <Left>
+inoremap <C-s> <Down>
+inoremap <C-d> <Right>
+
+
+"lsp配置
+let g:lsp_settings_servers_dir ="~/.vim/bundle/vim-lsp-settings/servers"
+
+
+
+
+
+"颜色配置
+highlight PMenu ctermfg=38  ctermbg=237 guifg=black guibg=darkgrey
+highlight PMenuSel ctermfg=38 ctermbg=7 guifg=darkgrey guibg=black
+
+
+"vimspector配置
+let g:vimspector_enable_mappings = 'HUMAN'
+
+
+
+
+"----ale配置
+"始终开启标志列
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 0
+"自定义error和warning图标
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+"在vim自带的状态栏中整合ale
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+"显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"<Leader>s触发/关闭语法检查
+nmap <Leader>s :ALEToggle<CR>
+"<Leader>d查看错误或警告的详细信息
+nmap <Leader>d :ALEDetail<CR>
+
+"----nerdTree配置
+"nerdTree快捷键
+map <F1> :NERDTreeMirror<CR>
+map <F1> :NERDTreeToggle<CR>
+""不显示隐藏文件
+let g:NERDTreeHidden=0
+""打开vim时如果没有文件自动打开NERDTree
+autocmd vimenter * if !argc()|NERDTree|endif
+""当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+""修改树的显示图标
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+
+
+"ctags配置
+let Tlist_Ctags_Cmd="/usr/local/bin/ctags"
+let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+let Tlist_Use_Right_Window=1
+set tags=tags;
+set autochdir
+"启动vim后自动打开taglist窗口
+"let Tlist_Auto_Open = 1
+"设置taglist打开关闭的快捷键F8
+noremap <F2> :TlistToggle<CR>
+"更新ctags标签文件快捷键设置
+noremap <silent> cr :!ctags -R<CR>
